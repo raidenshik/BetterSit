@@ -53,9 +53,13 @@ public class LanguageManager {
         }
 
         String message = lang.getString(key);
-        if (message == null) {
-            plugin.getLogger().warning("Missing message key: " + key + " in language " + defaultLanguage);
-            return Component.text("Missing message: " + key);
+
+        // Проверка на отключение сообщения
+        if (message == null || message.equalsIgnoreCase("null") || message.trim().isEmpty()) {
+            if (!lang.contains(key)) {
+                plugin.getLogger().warning("Missing message key: " + key + " in language " + defaultLanguage);
+            }
+            return Component.empty();
         }
 
         // Замена плейсхолдеров {0}, {1}...
@@ -75,8 +79,11 @@ public class LanguageManager {
     }
 
     public Component getPrefixedMessage(String key, Object... placeholders) {
-        Component prefix = getMessage("prefix");
         Component message = getMessage(key, placeholders);
+        if (message == Component.empty()) {
+            return Component.empty();
+        }
+        Component prefix = getMessage("prefix");
         return prefix.append(message);
     }
 
