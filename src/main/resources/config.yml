@@ -1,15 +1,14 @@
-# BetterSit Configuration
-
-# Язык сообщений (должен соответствовать файлу в папке languages, например en или ru)
+# Language file (en, ru, or any other file in /languages folder)
 language: en
 
-# Центрировать ли игрока по центру блока при сидении?
+# Center the player on the block when sitting/lying?
 center-on-block: true
 
-# Смещение по высоте для сидения (отрицательное значение опускает)
+# Height offset for sitting (negative values make the player sit lower)
 sit-height-offset: -0.2
-# Смещение по высоте для лежания (отрицательное значение опускает)
+
+# Height offset for lying (negative values make the player lie lower)
 lay-height-offset: -0.8
 
-# Задержка между использованиями /sit (в секундах). 0 - без задержки.
+# Cooldown between /sit or /lay uses in seconds (0 = disabled)
 sit-cooldown: 0
