@@ -25,7 +25,10 @@ public class LanguageManager {
     private void loadLanguages() {
         File langFolder = new File(plugin.getDataFolder(), "languages");
         if (!langFolder.exists()) {
-            langFolder.mkdirs();
+            if (!langFolder.mkdirs()) {
+                plugin.getLogger().warning("Could not create languages folder! Language files may not be saved.");
+                return;
+            }
             plugin.saveResource("languages/en.yml", false);
             plugin.saveResource("languages/ru.yml", false);
         }
@@ -49,16 +52,16 @@ public class LanguageManager {
     public Component getMessage(String key, Object... placeholders) {
         YamlConfiguration lang = languages.get(defaultLanguage);
         if (lang == null) {
-            return Component.text("Missing language file for " + defaultLanguage);
+            return Component.empty();
+        }
+
+        if (!lang.contains(key)) {
+            return Component.empty();
         }
 
         String message = lang.getString(key);
 
-        // Проверка на отключение сообщения
         if (message == null || message.equalsIgnoreCase("null") || message.trim().isEmpty()) {
-            if (!lang.contains(key)) {
-                plugin.getLogger().warning("Missing message key: " + key + " in language " + defaultLanguage);
-            }
             return Component.empty();
         }
 

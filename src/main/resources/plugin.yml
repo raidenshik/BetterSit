@@ -3,10 +3,20 @@ version: '${project.version}'
 main: rimzzdev.betterSit.BetterSit
 api-version: '1.21'
 author: Rimzzy
+commands:
+  sit:
+    description: Sit down or stand up
+    permission: betterSit.sit
+  lay:
+    description: Lie down or stand up
+    permission: betterSit.sit
+  bsit:
+    aliases: [bettersit]
+    description: BetterSit commands (use /bsit toggle for personal settings)
 permissions:
   betterSit.sit:
-    description: Allows using /sit
+    description: Allows using /sit and /lay
     default: true
   betterSit.admin:
-    description: Allows reloading the plugin
+    description: Allows using /bsit reload and /bsit version
     default: op

@@ -11,24 +11,24 @@ import org.bukkit.entity.Player;
 import rimzzdev.betterSit.SitManager;
 import rimzzdev.betterSit.config.LanguageManager;
 
-@CommandAlias("sit")
+@CommandAlias("lay")
 @CommandPermission("betterSit.sit")
-@Description("Sit down or stand up")
+@Description("Lie down or stand up")
 @SuppressWarnings("unused")
-public class SitCommand extends BaseCommand {
+public class LayCommand extends BaseCommand {
 
     private final SitManager sitManager;
     private final LanguageManager lang;
 
-    public SitCommand(SitManager sitManager, LanguageManager lang) {
+    public LayCommand(SitManager sitManager, LanguageManager lang) {
         this.sitManager = sitManager;
         this.lang = lang;
     }
 
     @Default
-    public void onSit(Player player) {
-        if (sitManager.isSitting(player)) {
-            if (sitManager.unsit(player)) {
+    public void onLay(Player player) {
+        if (sitManager.isLaying(player)) {
+            if (sitManager.unlay(player)) {
                 Component msg = lang.getPrefixedMessage("stood-up");
                 if (msg != Component.empty()) {
                     player.sendMessage(msg);
@@ -37,12 +37,6 @@ public class SitCommand extends BaseCommand {
                 player.sendMessage(Component.text("Could not stand up.").color(NamedTextColor.RED));
             }
             return;
-        }
-
-        if (sitManager.isLaying(player)) {
-            // Если лежит, сначала встанем, потом сядем
-            sitManager.unlay(player);
-            // и продолжим выполнение для сидения
         }
 
         long remaining = sitManager.getCooldownRemaining(player);
@@ -54,14 +48,14 @@ public class SitCommand extends BaseCommand {
             return;
         }
 
-        if (sitManager.sit(player)) {
+        if (sitManager.lay(player)) {
             sitManager.updateCooldown(player);
-            Component msg = lang.getPrefixedMessage("now-sitting");
+            Component msg = lang.getPrefixedMessage("now-laying");
             if (msg != Component.empty()) {
                 player.sendMessage(msg);
             }
         } else {
-            Component msg = lang.getPrefixedMessage("sit-failed");
+            Component msg = lang.getPrefixedMessage("lay-failed");
             if (msg != Component.empty()) {
                 player.sendMessage(msg);
             }

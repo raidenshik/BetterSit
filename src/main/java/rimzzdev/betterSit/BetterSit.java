@@ -3,12 +3,13 @@ package rimzzdev.betterSit;
 import co.aikar.commands.PaperCommandManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import rimzzdev.betterSit.commands.BsitCommand;
+import rimzzdev.betterSit.commands.LayCommand;
 import rimzzdev.betterSit.commands.SitCommand;
 import rimzzdev.betterSit.config.BetterSitConfig;
 import rimzzdev.betterSit.config.LanguageManager;
 import rimzzdev.betterSit.listeners.PlayerListener;
-import rimzzdev.betterSit.utils.UpdateChecker;
 
+@SuppressWarnings("unused")
 public final class BetterSit extends JavaPlugin {
 
     private static BetterSit instance;
@@ -20,26 +21,18 @@ public final class BetterSit extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // Конфигурация
-        saveDefaultConfig();
-        pluginConfig = new BetterSitConfig(this);
+        this.pluginConfig = new BetterSitConfig(this);
+        this.languageManager = new LanguageManager(this);
+        this.sitManager = new SitManager(pluginConfig);
 
-        // Языковой менеджер
-        languageManager = new LanguageManager(this);
-
-        // Менеджер сидения
-        sitManager = new SitManager(pluginConfig);
-
-        // ACF Command Manager
         PaperCommandManager commandManager = new PaperCommandManager(this);
         commandManager.registerCommand(new SitCommand(sitManager, languageManager));
+        commandManager.registerCommand(new LayCommand(sitManager, languageManager));
         commandManager.registerCommand(new BsitCommand(this));
 
-        // Слушатель событий
-        getServer().getPluginManager().registerEvents(new PlayerListener(sitManager, languageManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(sitManager, languageManager, this), this);
 
-        // Проверка обновлений
-        new UpdateChecker(this, "raidenshik", "BetterSit").check();
+        getLogger().info("BetterSit enabled.");
     }
 
     @Override
@@ -47,21 +40,11 @@ public final class BetterSit extends JavaPlugin {
         if (sitManager != null) {
             sitManager.unsitAll();
         }
+        getLogger().info("BetterSit disabled.");
     }
 
-    public static BetterSit getInstance() {
-        return instance;
-    }
-
-    public BetterSitConfig getPluginConfig() {
-        return pluginConfig;
-    }
-
-    public LanguageManager getLanguageManager() {
-        return languageManager;
-    }
-
-    public SitManager getSitManager() {
-        return sitManager;
-    }
+    public static BetterSit getInstance() { return instance; }
+    public BetterSitConfig getPluginConfig() { return pluginConfig; }
+    public LanguageManager getLanguageManager() { return languageManager; }
+    public SitManager getSitManager() { return sitManager; }
 }
